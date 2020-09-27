@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/player_exo"
+        app:show_buffering="when_playing"
+        app:use_sensor_rotation="true"
+        app:show_subtitle_button="true"
+        app:show_fastforward_button="true"
+        app:show_rewind_button="true"
+        app:fastforward_increment="15000"
+        app:rewind_increment="15000"
+        app:resize_mode="fixed_width"
+        app:show_next_button="false"
+        app:show_previous_button="false"
+        app:use_artwork="true"
+        app:use_controller="true" />
+
+</RelativeLayout>
