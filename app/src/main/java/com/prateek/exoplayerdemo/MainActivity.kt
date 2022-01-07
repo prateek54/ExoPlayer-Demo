@@ -3,11 +3,8 @@ package com.prateek.exoplayerdemo
 import android.os.Bundle
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.TracksInfo
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
+import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionOverrides
@@ -44,9 +41,14 @@ class MainActivity : AppCompatActivity(), Player.Listener {
         player?.playWhenReady = true
         player_exo.player = player
         val defaultHttpDataSourceFactory = DefaultHttpDataSource.Factory()
-        val mediaItem = MediaItem.fromUri("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8")
+        val drmConfig =
+            MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID)
+                .setLicenseUri("https://proxy.uat.widevine.com/proxy?provider=widevine_test")
+        val mediaItem = MediaItem.Builder()
+            .setUri("https://storage.googleapis.com/wvmedia/cenc/h264/tears/tears.mpd")
+            .setDrmConfiguration(drmConfig.build())
         val mediaSource =
-            HlsMediaSource.Factory(defaultHttpDataSourceFactory).createMediaSource(mediaItem)
+            DashMediaSource.Factory(defaultHttpDataSourceFactory).createMediaSource(mediaItem.build())
         player?.setMediaSource(mediaSource)
         player?.seekTo(playbackPosition)
         player?.playWhenReady = playWhenReady
