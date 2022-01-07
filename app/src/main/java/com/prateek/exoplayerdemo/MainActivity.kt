@@ -7,13 +7,16 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.TracksInfo
+import com.google.android.exoplayer2.database.StandaloneDatabaseProvider
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionOverrides
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.exoplayer2.upstream.*
+import com.google.android.exoplayer2.upstream.cache.*
 import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 
 class MainActivity : AppCompatActivity(), Player.Listener {
     private var qualityPopUp: PopupMenu?=null
@@ -22,6 +25,9 @@ class MainActivity : AppCompatActivity(), Player.Listener {
     private var playWhenReady = true
     private var trackSelector:DefaultTrackSelector?=null
     var qualityList = ArrayList<Pair<String, TrackSelectionOverrides.Builder>>()
+    private val DOWNLOAD_CONTENT_DIRECTORY = "downloads"
+    private var downloadCache: Cache? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +49,9 @@ class MainActivity : AppCompatActivity(), Player.Listener {
             .build()
         player?.playWhenReady = true
         player_exo.player = player
-        val defaultHttpDataSourceFactory = DefaultHttpDataSource.Factory()
         val mediaItem = MediaItem.fromUri("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8")
         val mediaSource =
-            HlsMediaSource.Factory(defaultHttpDataSourceFactory).createMediaSource(mediaItem)
+            HlsMediaSource.Factory(buildCacheDataSourceFactory()).createMediaSource(mediaItem)
         player?.setMediaSource(mediaSource)
         player?.seekTo(playbackPosition)
         player?.playWhenReady = playWhenReady
@@ -54,6 +59,36 @@ class MainActivity : AppCompatActivity(), Player.Listener {
         player?.prepare()
 
     }
+
+
+    fun buildCacheDataSourceFactory(): DataSource.Factory {
+        val cache = getDownloadCache()
+        val cacheSink = CacheDataSink.Factory()
+            .setCache(cache)
+        val upstreamFactory = DefaultDataSource.Factory(this, DefaultHttpDataSource.Factory())
+        return CacheDataSource.Factory()
+            .setCache(cache)
+            .setCacheWriteDataSinkFactory(cacheSink)
+            .setCacheReadDataSourceFactory(FileDataSource.Factory())
+            .setUpstreamDataSourceFactory(upstreamFactory)
+            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+    }
+
+    @Synchronized
+    private fun getDownloadCache(): Cache {
+        if (downloadCache == null) {
+            val downloadContentDirectory = File(
+                getExternalFilesDir(null),
+                DOWNLOAD_CONTENT_DIRECTORY
+            )
+            downloadCache =
+                SimpleCache(downloadContentDirectory, NoOpCacheEvictor(), StandaloneDatabaseProvider(this))
+        }
+        return downloadCache!!
+    }
+
+
+
 
     private fun setUpQualityList() {
         qualityPopUp = PopupMenu(this, exo_quality)
