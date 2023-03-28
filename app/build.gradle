@@ -3,16 +3,16 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "com.prateek.exoplayerdemo"
         minSdkVersion 19
-        targetSdkVersion 33
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -26,10 +26,6 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
-
-    viewBinding {
-        enabled = true
-    }
 }
 
 dependencies {
@@ -42,11 +38,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
-    implementation 'com.google.android.exoplayer:extension-cronet:2.18.5'
-    implementation 'com.google.android.material:material:1.6.0'
-    implementation 'androidx.mediarouter:mediarouter:1.2.5'
-    implementation 'com.google.android.gms:play-services-cast-framework:21.2.0'
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.google.android.exoplayer:exoplayer:2.12.0'
 
 }

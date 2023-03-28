@@ -7,8 +7,4 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TrackSelectionDialogThemeOverlay" parent="ThemeOverlay.AppCompat.Dialog.Alert">
-        <item name="windowNoTitle">false</item>
-    </style>
-
 </resources>
