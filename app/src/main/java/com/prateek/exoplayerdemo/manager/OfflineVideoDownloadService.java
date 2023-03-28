@@ -21,16 +21,15 @@ import android.app.Notification;
 import android.content.Context;
 
 import androidx.annotation.Nullable;
+import androidx.media3.common.util.NotificationUtil;
+import androidx.media3.common.util.Util;
+import androidx.media3.exoplayer.offline.Download;
+import androidx.media3.exoplayer.offline.DownloadManager;
+import androidx.media3.exoplayer.offline.DownloadNotificationHelper;
+import androidx.media3.exoplayer.offline.DownloadService;
+import androidx.media3.exoplayer.scheduler.PlatformScheduler;
+import androidx.media3.exoplayer.scheduler.Scheduler;
 
-import com.google.android.exoplayer2.offline.Download;
-import com.google.android.exoplayer2.offline.DownloadManager;
-import com.google.android.exoplayer2.offline.DownloadService;
-import com.google.android.exoplayer2.scheduler.PlatformScheduler;
-import com.google.android.exoplayer2.scheduler.Requirements;
-import com.google.android.exoplayer2.scheduler.Scheduler;
-import com.google.android.exoplayer2.ui.DownloadNotificationHelper;
-import com.google.android.exoplayer2.util.NotificationUtil;
-import com.google.android.exoplayer2.util.Util;
 import com.prateek.exoplayerdemo.R;
 
 import java.util.List;

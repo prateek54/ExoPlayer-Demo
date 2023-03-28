@@ -24,32 +24,31 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentManager;
+import androidx.media3.common.DrmInitData;
+import androidx.media3.common.Format;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.TrackGroup;
+import androidx.media3.common.TrackSelectionParameters;
+import androidx.media3.common.Tracks;
+import androidx.media3.common.util.Log;
+import androidx.media3.common.util.Util;
+import androidx.media3.datasource.DataSource;
+import androidx.media3.exoplayer.RenderersFactory;
+import androidx.media3.exoplayer.drm.DrmSession;
+import androidx.media3.exoplayer.drm.DrmSessionEventListener;
+import androidx.media3.exoplayer.drm.OfflineLicenseHelper;
+import androidx.media3.exoplayer.offline.Download;
+import androidx.media3.exoplayer.offline.DownloadCursor;
+import androidx.media3.exoplayer.offline.DownloadHelper;
+import androidx.media3.exoplayer.offline.DownloadHelper.LiveContentUnsupportedException;
+import androidx.media3.exoplayer.offline.DownloadIndex;
+import androidx.media3.exoplayer.offline.DownloadManager;
+import androidx.media3.exoplayer.offline.DownloadRequest;
+import androidx.media3.exoplayer.offline.DownloadService;
+import androidx.media3.exoplayer.source.TrackGroupArray;
+import androidx.media3.exoplayer.trackselection.MappingTrackSelector.MappedTrackInfo;
 
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.RenderersFactory;
-import com.google.android.exoplayer2.Tracks;
-import com.google.android.exoplayer2.drm.DrmInitData;
-import com.google.android.exoplayer2.drm.DrmSession;
-import com.google.android.exoplayer2.drm.DrmSessionEventListener;
-import com.google.android.exoplayer2.drm.OfflineLicenseHelper;
-import com.google.android.exoplayer2.offline.Download;
-import com.google.android.exoplayer2.offline.DownloadCursor;
-import com.google.android.exoplayer2.offline.DownloadHelper;
-import com.google.android.exoplayer2.offline.DownloadHelper.LiveContentUnsupportedException;
-import com.google.android.exoplayer2.offline.DownloadIndex;
-import com.google.android.exoplayer2.offline.DownloadManager;
-import com.google.android.exoplayer2.offline.DownloadRequest;
-import com.google.android.exoplayer2.offline.DownloadService;
-import com.google.android.exoplayer2.source.TrackGroup;
-import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo;
-import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.util.Log;
-import com.google.android.exoplayer2.util.Util;
 import com.prateek.exoplayerdemo.R;
 
 import java.io.IOException;
@@ -160,7 +159,7 @@ public class DownloadTracker {
   }
 
   private final class StartDownloadDialogHelper
-      implements DownloadHelper.Callback,
+          implements DownloadHelper.Callback,
           TrackSelectionDialog.TrackSelectionListener,
           DialogInterface.OnDismissListener {
 
@@ -203,27 +202,27 @@ public class DownloadTracker {
       // The content is DRM protected. We need to acquire an offline license.
       if (Util.SDK_INT < 18) {
         Toast.makeText(context, R.string.error_drm_unsupported_before_api_18, Toast.LENGTH_LONG)
-            .show();
+                .show();
         Log.e(TAG, "Downloading DRM protected content is not supported on API versions below 18");
         return;
       }
       // TODO(internal b/163107948): Support cases where DrmInitData are not in the manifest.
       if (!hasSchemaData(format.drmInitData)) {
         Toast.makeText(context, R.string.download_start_error_offline_license, Toast.LENGTH_LONG)
-            .show();
+                .show();
         Log.e(
-            TAG,
-            "Downloading content where DRM scheme data is not located in the manifest is not"
-                + " supported");
+                TAG,
+                "Downloading content where DRM scheme data is not located in the manifest is not"
+                        + " supported");
         return;
       }
       widevineOfflineLicenseFetchTask =
-          new WidevineOfflineLicenseFetchTask(
-              format,
-              mediaItem.localConfiguration.drmConfiguration,
-              dataSourceFactory,
-              /* dialogHelper= */ this,
-              helper);
+              new WidevineOfflineLicenseFetchTask(
+                      format,
+                      mediaItem.localConfiguration.drmConfiguration,
+                      dataSourceFactory,
+                      /* dialogHelper= */ this,
+                      helper);
       widevineOfflineLicenseFetchTask.execute();
     }
 
@@ -231,9 +230,9 @@ public class DownloadTracker {
     public void onPrepareError(DownloadHelper helper, IOException e) {
       boolean isLiveContent = e instanceof LiveContentUnsupportedException;
       int toastStringId =
-          isLiveContent ? R.string.download_live_unsupported : R.string.download_start_error;
+              isLiveContent ? R.string.download_live_unsupported : R.string.download_start_error;
       String logMessage =
-          isLiveContent ? "Downloading live content unsupported" : "Failed to start download";
+              isLiveContent ? "Downloading live content unsupported" : "Failed to start download";
       Toast.makeText(context, toastStringId, Toast.LENGTH_LONG).show();
       Log.e(TAG, logMessage, e);
     }
@@ -273,8 +272,8 @@ public class DownloadTracker {
       for (int periodIndex = 0; periodIndex < helper.getPeriodCount(); periodIndex++) {
         MappedTrackInfo mappedTrackInfo = helper.getMappedTrackInfo(periodIndex);
         for (int rendererIndex = 0;
-            rendererIndex < mappedTrackInfo.getRendererCount();
-            rendererIndex++) {
+             rendererIndex < mappedTrackInfo.getRendererCount();
+             rendererIndex++) {
           TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
           for (int trackGroupIndex = 0; trackGroupIndex < trackGroups.length; trackGroupIndex++) {
             TrackGroup trackGroup = trackGroups.get(trackGroupIndex);
@@ -297,7 +296,7 @@ public class DownloadTracker {
 
     private void onOfflineLicenseFetchedError(DrmSession.DrmSessionException e) {
       Toast.makeText(context, R.string.download_start_error_offline_license, Toast.LENGTH_LONG)
-          .show();
+              .show();
       Log.e(TAG, "Failed to fetch offline DRM license", e);
     }
 
@@ -317,14 +316,14 @@ public class DownloadTracker {
         return;
       }
       trackSelectionDialog =
-          TrackSelectionDialog.createForTracksAndParameters(
-              /* titleId= */ R.string.exo_download_description,
-              tracks,
-              DownloadHelper.getDefaultTrackSelectorParameters(context),
-              /* allowAdaptiveSelections= */ false,
-              /* allowMultipleOverrides= */ true,
-              /* onTracksSelectedListener= */ this,
-              /* onDismissListener= */ this);
+              TrackSelectionDialog.createForTracksAndParameters(
+                      /* titleId= */ R.string.exo_download_description,
+                      tracks,
+                      DownloadHelper.getDefaultTrackSelectorParameters(context),
+                      /* allowAdaptiveSelections= */ false,
+                      /* allowMultipleOverrides= */ true,
+                      /* onTracksSelectedListener= */ this,
+                      /* onDismissListener= */ this);
       trackSelectionDialog.show(fragmentManager, /* tag= */ null);
     }
 
@@ -347,14 +346,14 @@ public class DownloadTracker {
 
     private void startDownload(DownloadRequest downloadRequest) {
       DownloadService.sendAddDownload(
-          context, OfflineVideoDownloadService.class, downloadRequest, /* foreground= */ false);
+              context, OfflineVideoDownloadService.class, downloadRequest, /* foreground= */ false);
     }
 
     private DownloadRequest buildDownloadRequest() {
       return downloadHelper
-          .getDownloadRequest(
-              Util.getUtf8Bytes(checkNotNull(mediaItem.mediaMetadata.title.toString())))
-          .copyWithKeySetId(keySetId);
+              .getDownloadRequest(
+                      Util.getUtf8Bytes(checkNotNull(mediaItem.mediaMetadata.title.toString())))
+              .copyWithKeySetId(keySetId);
     }
   }
 

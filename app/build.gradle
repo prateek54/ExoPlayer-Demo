@@ -42,8 +42,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
-    implementation 'com.google.android.exoplayer:extension-cronet:2.18.5'
+    def media3_version = "1.0.0"
+    implementation "androidx.media3:media3-exoplayer:$media3_version"
+    implementation "androidx.media3:media3-ui:$media3_version"
+    implementation "androidx.media3:media3-datasource-cronet:$media3_version"
+    implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
     implementation 'com.google.android.material:material:1.6.0'
     implementation 'androidx.mediarouter:mediarouter:1.2.5'
     implementation 'com.google.android.gms:play-services-cast-framework:21.2.0'
