@@ -10,10 +10,6 @@ For Implementation, I have put up a list of articles which refer to different br
 - [Let's Dive into Exo-Player (Part IV): Caching Video](https://proandroiddev.com/lets-dive-into-exo-player-part-iv-caching-video-7ac2dc430dbf)
 - [Let's Dive into Exo-Player (Part V): How Offline Downloads Works](https://medium.com/@prateekbatra54/exo-player-how-offline-downloads-works-part-v-be54f5f9af4b)
 
-## Demo
-
-![](exo-demo.gif)
-
 ## Contributing
 
 Pull requests are welcome. For any major/minor changes, please open an issue first
