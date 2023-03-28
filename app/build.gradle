@@ -3,13 +3,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 33
     buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "com.prateek.exoplayerdemo"
-        minSdkVersion 19
-        targetSdkVersion 29
+        minSdkVersion 21
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
@@ -38,6 +38,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
+    implementation "androidx.media3:media3-exoplayer:1.0.0"
+    implementation "androidx.media3:media3-ui:1.0.0"
+    implementation "androidx.media3:media3-exoplayer-hls:1.0.0"
 
 }
