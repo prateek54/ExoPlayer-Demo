@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">ExoPlayer Demo</string>
+    <string name="label_remove_audio">Remove Audio</string>
+    <string name="label_trim_starting_30_sec">Trim starting 30 sec</string>
+    <string name="label_add_zoom_effect">Add Zoom Effect</string>
+    <string name="label_rotate">Rotate</string>
+    <string name="label_grayscale">GrayScale</string>
+    <string name="label_transform_media">Transform Media</string>
 </resources>

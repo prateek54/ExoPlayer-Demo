@@ -1,23 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <androidx.media3.ui.PlayerView
-        android:id="@+id/player_exo"
+        android:id="@+id/player_exo_input"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:resize_mode="fixed_width"
+        android:layout_height="200dp"
+        app:resize_mode="fixed_height"
         app:show_buffering="when_playing"
         app:show_fastforward_button="true"
         app:show_next_button="false"
         app:show_previous_button="false"
         app:show_rewind_button="true"
         app:show_subtitle_button="true"
+        android:layout_marginBottom="16dp"
         app:use_artwork="true"
         app:use_controller="true" />
 
-</RelativeLayout>
+
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/player_exo_output"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="20dp"
+        android:layout_height="200dp"
+        app:resize_mode="fixed_height"
+        app:show_buffering="when_playing"
+        app:show_fastforward_button="true"
+        app:show_next_button="false"
+        app:show_previous_button="false"
+        android:visibility="gone"
+        app:show_rewind_button="true"
+        app:show_subtitle_button="true"
+        app:use_artwork="true"
+        app:use_controller="true" />
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_audio"
+        android:text="@string/label_remove_audio" />
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_trim"
+        android:text="@string/label_trim_starting_30_sec" />
+
+
+    <CheckBox
+        android:id="@+id/btn_zoom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_add_zoom_effect" />
+
+    <CheckBox
+        android:id="@+id/btn_rotate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_rotate" />
+
+    <CheckBox
+        android:id="@+id/btn_grayscale"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_grayscale" />
+
+
+    <Button
+        android:id="@+id/btn_transform_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_transform_media" />
+
+
+</LinearLayout>
