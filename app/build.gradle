@@ -38,11 +38,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation "androidx.media3:media3-exoplayer:1.0.1"
-    implementation "androidx.media3:media3-ui:1.0.1"
-    implementation "androidx.media3:media3-exoplayer-hls:1.0.1"
-    implementation "androidx.media3:media3-transformer:1.0.1"
-    implementation "androidx.media3:media3-effect:1.0.1"
-    implementation "androidx.media3:media3-common:1.0.1"
+    implementation "androidx.media3:media3-exoplayer:1.1.1"
+    implementation "androidx.media3:media3-ui:1.1.1"
+    implementation "androidx.media3:media3-exoplayer-hls:1.1.1"
+    implementation "androidx.media3:media3-transformer:1.1.1"
+    implementation "androidx.media3:media3-effect:1.1.1"
+    implementation "androidx.media3:media3-common:1.1.1"
 
 }

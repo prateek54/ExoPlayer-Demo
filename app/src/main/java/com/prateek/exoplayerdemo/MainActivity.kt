@@ -11,10 +11,14 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.Util
 import androidx.media3.effect.RgbFilter
+import androidx.media3.effect.ScaleAndRotateTransformation
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.transformer.TransformationException
-import androidx.media3.transformer.TransformationRequest
-import androidx.media3.transformer.TransformationResult
+import androidx.media3.transformer.Composition
+import androidx.media3.transformer.EditedMediaItem
+import androidx.media3.transformer.Effects
+import androidx.media3.transformer.ExportException
+import androidx.media3.transformer.ExportResult
+import androidx.media3.transformer.ProgressHolder
 import androidx.media3.transformer.Transformer
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
@@ -108,28 +112,37 @@ class MainActivity : AppCompatActivity(), Player.Listener, Transformer.Listener 
         if (checkSelfPermission(permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(permission.READ_EXTERNAL_STORAGE),  /* requestCode = */0)
         } else {
-            transformVideo()
+            transformer?.let {
+                printCurrentProgress()
+            }?: kotlin.run {
+                transformVideo()
+
+            }
+        }
+    }
+
+    private fun printCurrentProgress() {
+        val progressLogger = ProgressHolder()
+        if (transformer?.getProgress(progressLogger) == Transformer.PROGRESS_STATE_AVAILABLE) {
+            println(progressLogger.progress)
         }
     }
 
     private fun transformVideo() {
+        val effect = arrayListOf<Effect>()
+        if (btn_grayscale.isChecked) {
+            effect.add(RgbFilter.createGrayscaleFilter())
+        }
+        if (btn_zoom.isChecked) {
+            effect.add(MatrixTransformationFactory.createZoomInTransition())
+        }
+        if (btn_rotate.isChecked) {
+            effect.add(ScaleAndRotateTransformation.Builder()
+                .setRotationDegrees(90F)
+                .build())
+        }
         transformer = with(Transformer.Builder(this)) {
             addListener(this@MainActivity)
-            if (btn_rotate.isChecked) {
-                setTransformationRequest(
-                    TransformationRequest.Builder()
-                        .setRotationDegrees(90F).build()
-                )
-            }
-            val effect = arrayListOf<Effect>()
-            if (btn_grayscale.isChecked) {
-                effect.add(RgbFilter.createGrayscaleFilter())
-            }
-            if (btn_zoom.isChecked) {
-                effect.add(MatrixTransformationFactory.createZoomInTransition())
-            }
-            setVideoEffects(effect)
-            setRemoveAudio(btn_audio.isChecked)
             build()
         }
         val inputMediaItem = MediaItem.Builder().apply {
@@ -144,8 +157,14 @@ class MainActivity : AppCompatActivity(), Player.Listener, Transformer.Listener 
             }
 
         }.build()
+        val editedMediaItem = EditedMediaItem.Builder(inputMediaItem).apply {
+            setRemoveAudio(btn_audio.isChecked)
+            setEffects(Effects(mutableListOf(), effect))
+        }
+
         filePath = createExternalFile()
-        transformer!!.startTransformation(inputMediaItem, filePath?.absolutePath!!)
+        println("Transformation Started")
+        transformer!!.start(editedMediaItem.build(), filePath?.absolutePath!!)
     }
 
     @Throws(IOException::class)
@@ -156,24 +175,24 @@ class MainActivity : AppCompatActivity(), Player.Listener, Transformer.Listener 
         return file
     }
 
-    override fun onTransformationCompleted(
-        inputMediaItem: MediaItem,
-        transformationResult: TransformationResult
-    ) {
-        super.onTransformationCompleted(inputMediaItem, transformationResult)
+    override fun onCompleted(composition: Composition, exportResult: ExportResult) {
+        super.onCompleted(composition, exportResult)
         player_exo_output.visibility = View.VISIBLE
         initOutputPlayer()
+        println("Transformation Completed")
         Toast.makeText(this, "Transformation Completed", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onTransformationError(
-        inputMediaItem: MediaItem,
-        exception: TransformationException
-    ) {
-        super.onTransformationError(inputMediaItem, exception)
-        player_exo_output.visibility = View.GONE
-        println("Transformation Failed${exception.errorCodeName}")
-        Toast.makeText(this, "Transformation Failed${exception.errorCodeName}", Toast.LENGTH_SHORT).show()
-    }
 
+
+    override fun onError(
+        composition: Composition,
+        exportResult: ExportResult,
+        exportException: ExportException
+    ) {
+        super.onError(composition, exportResult, exportException)
+        player_exo_output.visibility = View.GONE
+        println("Transformation Failed${exportException.errorCodeName}")
+        Toast.makeText(this, "Transformation Failed${exportException.errorCodeName}", Toast.LENGTH_SHORT).show()
+    }
 }
